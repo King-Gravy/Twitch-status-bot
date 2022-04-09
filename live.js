@@ -31,7 +31,6 @@ module.exports = {
                     }
                 }
                 else {
-                    console.log(Oauth_Token)
                     if (is_live) channel.send(`${streamer} has stopped streaming.`)
                     is_live = false
                     streamer = null

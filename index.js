@@ -8,7 +8,7 @@ const myIntents = new Intents();
 
 myIntents.add(Intents.FLAGS.GUILDS)
 
-const client = new Client({ intents: myIntents, partials: ['CHANNEL'] });
+const client = new Client({ intents: myIntents });
 
 async function Update_Token() {
     client.twitch.oauth2 = await Oauth_Token()
