@@ -18,7 +18,7 @@ client.once("ready", async () => {
     client["twitch"] = {}
     client.twitch.oauth2 = await Oauth_Token()
     module.exports.client = client
-    setInterval(Update_Token, ms("59d"))
+    setInterval(Update_Token, ms("15d"))
     setInterval(Live, ms("15s"))
 })
 
