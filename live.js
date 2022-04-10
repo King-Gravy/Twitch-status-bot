@@ -1,6 +1,7 @@
 const axios = require('axios')
 const { exit } = require('process');
 const {
+    Twitch_Stream_URL,
     Twitch_Client_ID,
     Twitch_Channel_ID,
     Announcement_Channel_ID
@@ -12,6 +13,7 @@ module.exports = {
     async Live() {
         let channel = require('./index').client.guilds.cache.first().channels.cache.get(Announcement_Channel_ID) //.first() is used as this is meant for a bot that is only in one server.
         let Oauth_Token = require('./index').client.twitch.oauth2
+        let client = require('./index').client
         const live_config = {
             url: `https://api.twitch.tv/helix/streams?user_id=${Twitch_Channel_ID}`,
             method: "GET",
@@ -24,6 +26,7 @@ module.exports = {
             await axios(live_config).then(async r => {
                 if (r?.data?.data[0]?.type === "live") {
                     if (!is_live) {
+                        await client.user.setActivity(r?.data?.data[0].game_name, { type: "STREAMING", url: Twitch_Stream_URL }) 
                         if (streamer === null) streamer = r.data.data[0]?.user_name
                         let Message_Options = await Embed(r.data.data[0])
                         channel.send({ content: `@everyone ${streamer} is live!`, embeds: [Message_Options.embed], components: [Message_Options.button] })
@@ -31,7 +34,10 @@ module.exports = {
                     }
                 }
                 else {
-                    if (is_live) channel.send(`${streamer} has stopped streaming.`)
+                    if (is_live) {
+                        channel.send(`${streamer} has stopped streaming.`)
+                        await client.user.setActivity()
+                    }
                     is_live = false
                     streamer = null
                 }
